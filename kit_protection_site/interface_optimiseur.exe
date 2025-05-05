@@ -1,0 +1,37 @@
+import os
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import subprocess
+
+def run_script(script_name):
+    try:
+        if os.name == 'nt':
+            subprocess.run(['cmd', '/c', script_name], check=True)
+        else:
+            subprocess.run(['bash', script_name], check=True)
+        messagebox.showinfo("Succès", "Optimisation terminée !")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Erreur", f"Une erreur est survenue :\n{e}")
+
+def select_and_run():
+    root.filename = filedialog.askopenfilename(title="Sélectionner un script", filetypes=[("Scripts", "*.sh *.bat")])
+    if root.filename:
+        run_script(root.filename)
+
+def show_info():
+    messagebox.showinfo("Infos", "Ce programme permet d'optimiser les fichiers HTML, CSS, JS, PHP, Java, Dart et Flutter.
+
+Utilise les boutons pour lancer les scripts selon ton système d'exploitation.")
+
+root = tk.Tk()
+root.title("Optimiseur Web Multi-langages")
+root.geometry("400x200")
+
+tk.Label(root, text="Optimiseur Web (HTML, CSS, JS, PHP, Java, Dart, Flutter)", wraplength=380, justify="center").pack(pady=10)
+
+tk.Button(root, text="Lancer le script Linux/macOS (.sh)", command=lambda: run_script("script-optimize.sh")).pack(pady=5)
+tk.Button(root, text="Lancer le script Windows (.bat)", command=lambda: run_script("script-optimize.bat")).pack(pady=5)
+tk.Button(root, text="Choisir un script personnalisé", command=select_and_run).pack(pady=5)
+tk.Button(root, text="À propos", command=show_info).pack(pady=5)
+
+root.mainloop()
